@@ -19,7 +19,8 @@ type FlagSnapshot struct {
 	gorm.Model
 	FlagID    uint `gorm:"index:idx_flagsnapshot_flagid"`
 	UpdatedBy string
-	Flag      *Flag `sql:"type:text"`
+	FlagJSON  string `sql:"type:text"` // JSON string repr of flag
+	Flag      *Flag  `gorm:"-"`
 }
 
 // Scan implements scanner interface
@@ -41,6 +42,22 @@ func (f *Flag) Value() (driver.Value, error) {
 		return nil, err
 	}
 	return string(bytes), nil
+}
+
+// BeforeSave converts FlagSnapshot's Flag field into FlagJSON
+func (fs *FlagSnapshot) BeforeSave() (err error) {
+	flagJSON, err := fs.Flag.Value()
+	if err != nil {
+		return err
+	}
+	fs.FlagJSON = flagJSON.(string)
+	return nil
+}
+
+// AfterFind converts FlagSnapshot's FlagJSON field into Flag object
+func (fs *FlagSnapshot) AfterFind() (err error) {
+	fs.Flag = &Flag{}
+	return fs.Flag.Scan(fs.FlagJSON)
 }
 
 // SaveFlagSnapshot saves the Flag Snapshot
