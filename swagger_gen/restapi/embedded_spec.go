@@ -1334,23 +1334,27 @@ func init() {
         "segmentID": {
           "type": "integer",
           "format": "int64",
-          "minimum": 1
+          "minimum": 1,
+          "x-nullable": true
         },
         "timestamp": {
           "type": "string",
           "minLength": 1
         },
         "variantAttachment": {
-          "type": "object"
+          "type": "object",
+          "x-nullable": true
         },
         "variantID": {
           "type": "integer",
           "format": "int64",
-          "minimum": 1
+          "minimum": 1,
+          "x-nullable": true
         },
         "variantKey": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "x-nullable": true
         }
       }
     },
@@ -3017,23 +3021,27 @@ func init() {
         "segmentID": {
           "type": "integer",
           "format": "int64",
-          "minimum": 1
+          "minimum": 1,
+          "x-nullable": true
         },
         "timestamp": {
           "type": "string",
           "minLength": 1
         },
         "variantAttachment": {
-          "type": "object"
+          "type": "object",
+          "x-nullable": true
         },
         "variantID": {
           "type": "integer",
           "format": "int64",
-          "minimum": 1
+          "minimum": 1,
+          "x-nullable": true
         },
         "variantKey": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "x-nullable": true
         }
       }
     },

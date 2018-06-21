@@ -397,17 +397,21 @@ definitions:
         format: int64
       segmentID:
         type: integer
+        x-nullable: true
         format: int64
         minimum: 1
       variantID:
         type: integer
+        x-nullable: true
         format: int64
         minimum: 1
       variantKey:
         type: string
+        x-nullable: true
         minLength: 1
       variantAttachment:
         type: object
+        x-nullable: true
       evalContext:
         $ref: "#/definitions/evalContext"
       timestamp:
