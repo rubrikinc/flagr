@@ -64,6 +64,9 @@ func (o *GetFlagByNameBatchParams) BindRequest(r *http.Request, route *middlewar
 	return nil
 }
 
+// bindFlagNames binds and validates array parameter FlagNames from query.
+//
+// Arrays are parsed according to CollectionFormat: "" (defaults to "csv" when empty).
 func (o *GetFlagByNameBatchParams) bindFlagNames(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
 		return errors.Required("flagNames", "query")
@@ -100,6 +103,7 @@ func (o *GetFlagByNameBatchParams) bindFlagNames(rawData []string, hasKey bool, 
 	return nil
 }
 
+// validateFlagNames carries on validations for parameter FlagNames
 func (o *GetFlagByNameBatchParams) validateFlagNames(formats strfmt.Registry) error {
 
 	flagNamesSize := int64(len(o.FlagNames))
