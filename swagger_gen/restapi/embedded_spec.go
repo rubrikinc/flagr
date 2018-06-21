@@ -109,24 +109,28 @@ func init() {
         "operationId": "findFlags",
         "parameters": [
           {
-            "minimum": 1,
             "type": "integer",
             "format": "int64",
-            "default": 25,
             "description": "the numbers of flags to return",
             "name": "limit",
             "in": "query"
           },
           {
             "type": "boolean",
-            "description": "return only flags having given enabled status",
+            "description": "return flags having given enabled status",
             "name": "enabled",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "return only flags matching given description",
+            "description": "return flags exactly matching given description",
             "name": "description",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "return flags partially matching given description",
+            "name": "description_like",
             "in": "query"
           }
         ],
@@ -1788,24 +1792,28 @@ func init() {
         "operationId": "findFlags",
         "parameters": [
           {
-            "minimum": 1,
             "type": "integer",
             "format": "int64",
-            "default": 25,
             "description": "the numbers of flags to return",
             "name": "limit",
             "in": "query"
           },
           {
             "type": "boolean",
-            "description": "return only flags having given enabled status",
+            "description": "return flags having given enabled status",
             "name": "enabled",
             "in": "query"
           },
           {
             "type": "string",
-            "description": "return only flags matching given description",
+            "description": "return flags exactly matching given description",
             "name": "description",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "return flags partially matching given description",
+            "name": "description_like",
             "in": "query"
           }
         ],

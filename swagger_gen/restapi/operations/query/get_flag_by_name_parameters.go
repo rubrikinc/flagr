@@ -62,6 +62,7 @@ func (o *GetFlagByNameParams) BindRequest(r *http.Request, route *middleware.Mat
 	return nil
 }
 
+// bindFlagName binds and validates parameter FlagName from query.
 func (o *GetFlagByNameParams) bindFlagName(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	if !hasKey {
 		return errors.Required("flagName", "query")
@@ -86,6 +87,7 @@ func (o *GetFlagByNameParams) bindFlagName(rawData []string, hasKey bool, format
 	return nil
 }
 
+// validateFlagName carries on validations for parameter FlagName
 func (o *GetFlagByNameParams) validateFlagName(formats strfmt.Registry) error {
 
 	if err := validate.MinLength("flagName", "query", o.FlagName, 1); err != nil {

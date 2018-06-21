@@ -12,24 +12,15 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
 
 // NewFindFlagsParams creates a new FindFlagsParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewFindFlagsParams() FindFlagsParams {
 
-	var (
-		// initialize parameters with default values
-
-		limitDefault = int64(25)
-	)
-
-	return FindFlagsParams{
-		Limit: &limitDefault,
-	}
+	return FindFlagsParams{}
 }
 
 // FindFlagsParams contains all the bound params for the find flags operation
@@ -41,18 +32,20 @@ type FindFlagsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*return only flags matching given description
+	/*return flags exactly matching given description
 	  In: query
 	*/
 	Description *string
-	/*return only flags having given enabled status
+	/*return flags partially matching given description
+	  In: query
+	*/
+	DescriptionLike *string
+	/*return flags having given enabled status
 	  In: query
 	*/
 	Enabled *bool
 	/*the numbers of flags to return
-	  Minimum: 1
 	  In: query
-	  Default: 25
 	*/
 	Limit *int64
 }
@@ -73,6 +66,11 @@ func (o *FindFlagsParams) BindRequest(r *http.Request, route *middleware.Matched
 		res = append(res, err)
 	}
 
+	qDescriptionLike, qhkDescriptionLike, _ := qs.GetOK("description_like")
+	if err := o.bindDescriptionLike(qDescriptionLike, qhkDescriptionLike, route.Formats); err != nil {
+		res = append(res, err)
+	}
+
 	qEnabled, qhkEnabled, _ := qs.GetOK("enabled")
 	if err := o.bindEnabled(qEnabled, qhkEnabled, route.Formats); err != nil {
 		res = append(res, err)
@@ -89,6 +87,7 @@ func (o *FindFlagsParams) BindRequest(r *http.Request, route *middleware.Matched
 	return nil
 }
 
+// bindDescription binds and validates parameter Description from query.
 func (o *FindFlagsParams) bindDescription(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
@@ -106,6 +105,25 @@ func (o *FindFlagsParams) bindDescription(rawData []string, hasKey bool, formats
 	return nil
 }
 
+// bindDescriptionLike binds and validates parameter DescriptionLike from query.
+func (o *FindFlagsParams) bindDescriptionLike(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	var raw string
+	if len(rawData) > 0 {
+		raw = rawData[len(rawData)-1]
+	}
+
+	// Required: false
+	// AllowEmptyValue: false
+	if raw == "" { // empty values pass all other validations
+		return nil
+	}
+
+	o.DescriptionLike = &raw
+
+	return nil
+}
+
+// bindEnabled binds and validates parameter Enabled from query.
 func (o *FindFlagsParams) bindEnabled(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
@@ -127,6 +145,7 @@ func (o *FindFlagsParams) bindEnabled(rawData []string, hasKey bool, formats str
 	return nil
 }
 
+// bindLimit binds and validates parameter Limit from query.
 func (o *FindFlagsParams) bindLimit(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
@@ -136,7 +155,6 @@ func (o *FindFlagsParams) bindLimit(rawData []string, hasKey bool, formats strfm
 	// Required: false
 	// AllowEmptyValue: false
 	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewFindFlagsParams()
 		return nil
 	}
 
@@ -145,19 +163,6 @@ func (o *FindFlagsParams) bindLimit(rawData []string, hasKey bool, formats strfm
 		return errors.InvalidType("limit", "query", "int64", raw)
 	}
 	o.Limit = &value
-
-	if err := o.validateLimit(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *FindFlagsParams) validateLimit(formats strfmt.Registry) error {
-
-	if err := validate.MinimumInt("limit", "query", int64(*o.Limit), 1, false); err != nil {
-		return err
-	}
 
 	return nil
 }
