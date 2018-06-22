@@ -7,12 +7,12 @@ package query
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -34,12 +34,12 @@ type GetFlagByNameBatchParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*
+	/*query batch request
 	  Required: true
 	  Min Items: 1
-	  In: query
+	  In: body
 	*/
-	FlagNames []string
+	Body []string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -51,67 +51,54 @@ func (o *GetFlagByNameBatchParams) BindRequest(r *http.Request, route *middlewar
 
 	o.HTTPRequest = r
 
-	qs := runtime.Values(r.URL.Query())
-
-	qFlagNames, qhkFlagNames, _ := qs.GetOK("flagNames")
-	if err := o.bindFlagNames(qFlagNames, qhkFlagNames, route.Formats); err != nil {
-		res = append(res, err)
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body []string
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("body", "body"))
+			} else {
+				res = append(res, errors.NewParseError("body", "body", "", err))
+			}
+		} else {
+			// validate inline body array
+			o.Body = body
+			if err := o.validateBodyBody(route.Formats); err != nil {
+				res = append(res, err)
+			}
+		}
+	} else {
+		res = append(res, errors.Required("body", "body"))
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-// bindFlagNames binds and validates array parameter FlagNames from query.
-//
-// Arrays are parsed according to CollectionFormat: "" (defaults to "csv" when empty).
-func (o *GetFlagByNameBatchParams) bindFlagNames(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	if !hasKey {
-		return errors.Required("flagNames", "query")
+// validateBodyBody validates an inline body parameter
+func (o *GetFlagByNameBatchParams) validateBodyBody(formats strfmt.Registry) error {
+
+	bodySize := int64(len(o.Body))
+
+	// minItems: 1
+	if err := validate.MinItems("body", "body", bodySize, 1); err != nil {
+		return err
 	}
 
-	var qvFlagNames string
-	if len(rawData) > 0 {
-		qvFlagNames = rawData[len(rawData)-1]
-	}
+	bodyIC := o.Body
 
-	// CollectionFormat:
-	flagNamesIC := swag.SplitByFormat(qvFlagNames, "")
+	var bodyIR []string
+	for i, bodyIV := range bodyIC {
+		bodyI := bodyIV
 
-	if len(flagNamesIC) == 0 {
-		return errors.Required("flagNames", "query")
-	}
-
-	var flagNamesIR []string
-	for i, flagNamesIV := range flagNamesIC {
-		flagNamesI := flagNamesIV
-
-		if err := validate.MinLength(fmt.Sprintf("%s.%v", "flagNames", i), "query", flagNamesI, 1); err != nil {
+		if err := validate.MinLength(fmt.Sprintf("%s.%v", "body", i), "body", bodyI, 1); err != nil {
 			return err
 		}
 
-		flagNamesIR = append(flagNamesIR, flagNamesI)
+		bodyIR = append(bodyIR, bodyI)
 	}
 
-	o.FlagNames = flagNamesIR
-	if err := o.validateFlagNames(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateFlagNames carries on validations for parameter FlagNames
-func (o *GetFlagByNameBatchParams) validateFlagNames(formats strfmt.Registry) error {
-
-	flagNamesSize := int64(len(o.FlagNames))
-
-	// minItems: 1
-	if err := validate.MinItems("flagNames", "query", flagNamesSize, 1); err != nil {
-		return err
-	}
-
+	o.Body = bodyIR
 	return nil
 }

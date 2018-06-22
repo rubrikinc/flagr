@@ -1061,22 +1061,25 @@ func init() {
       }
     },
     "/query/batch": {
-      "get": {
+      "post": {
         "tags": [
           "query"
         ],
         "operationId": "getFlagByNameBatch",
         "parameters": [
           {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "name": "flagNames",
-            "in": "query",
-            "required": true
+            "description": "query batch request",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         ],
         "responses": {
@@ -2748,22 +2751,25 @@ func init() {
       }
     },
     "/query/batch": {
-      "get": {
+      "post": {
         "tags": [
           "query"
         ],
         "operationId": "getFlagByNameBatch",
         "parameters": [
           {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "name": "flagNames",
-            "in": "query",
-            "required": true
+            "description": "query batch request",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         ],
         "responses": {

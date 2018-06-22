@@ -9,17 +9,11 @@ import (
 	"errors"
 	"net/url"
 	golangswaggerpaths "path"
-
-	"github.com/go-openapi/swag"
 )
 
 // GetFlagByNameBatchURL generates an URL for the get flag by name batch operation
 type GetFlagByNameBatchURL struct {
-	FlagNames []string
-
 	_basePath string
-	// avoid unkeyed usage
-	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
@@ -48,27 +42,6 @@ func (o *GetFlagByNameBatchURL) Build() (*url.URL, error) {
 		_basePath = "/api/v1"
 	}
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
-
-	qs := make(url.Values)
-
-	var flagNamesIR []string
-	for _, flagNamesI := range o.FlagNames {
-		flagNamesIS := flagNamesI
-		if flagNamesIS != "" {
-			flagNamesIR = append(flagNamesIR, flagNamesIS)
-		}
-	}
-
-	flagNames := swag.JoinByFormat(flagNamesIR, "")
-
-	if len(flagNames) > 0 {
-		qsv := flagNames[0]
-		if qsv != "" {
-			qs.Set("flagNames", qsv)
-		}
-	}
-
-	result.RawQuery = qs.Encode()
 
 	return &result, nil
 }

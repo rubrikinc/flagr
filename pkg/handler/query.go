@@ -42,7 +42,7 @@ func (qAPI *queryAPI) GetFlagByName(params query.GetFlagByNameParams) middleware
 }
 
 func (qAPI *queryAPI) GetFlagByNameBatch(params query.GetFlagByNameBatchParams) middleware.Responder {
-	flagNames := params.FlagNames
+	flagNames := params.Body
 
 	fs := []entity.Flag{}
 	q := entity.NewFlagQuerySet(getDB())

@@ -733,19 +733,21 @@ paths:
           schema:
             $ref: '#/definitions/error'
   /query/batch:
-    get:
+    post:
       tags:
         - query
       operationId: getFlagByNameBatch
       parameters:
-        - in: query
-          name: flagNames
+        - in: body
+          name: body
           required: true
-          type: array
-          items:
-            type: string
-            minLength: 1
-          minItems: 1
+          description: query batch request
+          schema:
+            type: array
+            items:
+              type: string
+              minLength: 1
+            minItems: 1
       responses:
         '200':
           description: >-

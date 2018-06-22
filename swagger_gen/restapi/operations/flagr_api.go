@@ -546,10 +546,10 @@ func (o *FlagrAPI) initHandlerCache() {
 	}
 	o.handlers["GET"]["/query"] = query.NewGetFlagByName(o.context, o.QueryGetFlagByNameHandler)
 
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/query/batch"] = query.NewGetFlagByNameBatch(o.context, o.QueryGetFlagByNameBatchHandler)
+	o.handlers["POST"]["/query/batch"] = query.NewGetFlagByNameBatch(o.context, o.QueryGetFlagByNameBatchHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
