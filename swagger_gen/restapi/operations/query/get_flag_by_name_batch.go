@@ -29,7 +29,7 @@ func NewGetFlagByNameBatch(ctx *middleware.Context, handler GetFlagByNameBatchHa
 	return &GetFlagByNameBatch{Context: ctx, Handler: handler}
 }
 
-/*GetFlagByNameBatch swagger:route GET /query/batch query getFlagByNameBatch
+/*GetFlagByNameBatch swagger:route POST /query/batch query getFlagByNameBatch
 
 GetFlagByNameBatch get flag by name batch API
 
