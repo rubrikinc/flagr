@@ -49,11 +49,11 @@ func (s *FlagSynchronizer) SynchronizeFlags() {
     }
 
     // Delete flags that no longer exist
-    allFlagNames := make([]string, 0, len(yamlConfig.Flags))
-    for key, _ := range yamlConfig.Flags {
-        allFlagNames = append(allFlagNames, key)
-    }
-    s.api.DeleteUnusedFlags(allFlagNames)
+    // allFlagNames := make([]string, 0, len(yamlConfig.Flags))
+    // for key, _ := range yamlConfig.Flags {
+    //     allFlagNames = append(allFlagNames, key)
+    // }
+    s.api.DeleteUnusedFlags(yamlConfig.Flags)
 }
 
 func (s *FlagSynchronizer) synchronizeFlag(flagName string, yamlFlag *YAMLFlag) uint {
@@ -78,7 +78,7 @@ func (s *FlagSynchronizer) synchronizeFlag(flagName string, yamlFlag *YAMLFlag) 
 
     // Delete un-needed variants, must do this after synchronizing segments
     // because we can't delete a variant until it is no longer being used
-    s.api.DeleteUnusedVariants(flag.ID, variantKeys)
+    s.api.DeleteUnusedVariants(flag.ID, variantKeyToID)
 
     return flag.ID
 }

@@ -26,11 +26,25 @@ func (api *SetupAPI) SaveFlagSnapshot(flagID uint, updatedBy string) {
     entity.SaveFlagSnapshot(api.db, flagID, updatedBy)
 }
 
-func (api *SetupAPI) DeleteUnusedFlags(flagNames []string) {
-    q := entity.NewFlagQuerySet(api.db)
-    err := q.NameNotIn(flagNames...).Delete()
+func (api *SetupAPI) DeleteUnusedFlags(flagNames map[string]*YAMLFlag) {
+    count, err := entity.NewFlagQuerySet(api.db).Count()
     if err != nil {
-        logrus.Fatalf("Error while deleting flags: %s", err)
+        logrus.Fatalf("Error while counting flags: %s", err)
+    }
+    allFlags := make([]entity.Flag, 0, count)
+    err = entity.NewFlagQuerySet(api.db).All(&allFlags)
+    if err != nil {
+        logrus.Fatalf("Error while listing all flags: %s", err)
+    }
+
+    for _, flag := range allFlags {
+        // Delete flag if its not in the given flagNames
+        if _, ok := flagNames[flag.Name]; !ok {
+            logrus.Infof("Deleting flag: %s", flag.Name)
+            if err := flag.Delete(api.db); err != nil {
+                logrus.Fatalf("Error while deleting flags: %s", err)
+            }
+        }
     }
 }
 
@@ -67,11 +81,23 @@ func (api *SetupAPI) EnsureVariantsExist(flagID uint, keys []string) []*entity.V
     return result
 }
 
-func (api *SetupAPI) DeleteUnusedVariants(flagID uint, keys []string) {
-    q := entity.NewVariantQuerySet(api.db)
-    err := q.FlagIDEq(flagID).KeyNotIn(keys...).Delete()
+func (api *SetupAPI) DeleteUnusedVariants(flagID uint, keys map[string]uint) {
+    count, err := entity.NewVariantQuerySet(api.db).Count()
     if err != nil {
-        logrus.Fatalf("Error while deleting variants: %s", err)
+        logrus.Fatalf("Error while counting variants: %s", err)
+    }
+    allVariants := make([]entity.Variant, 0, count)
+    err = entity.NewVariantQuerySet(api.db).All(&allVariants)
+    if err != nil {
+        logrus.Fatalf("Error while listing all variants: %s", err)
+    }
+
+    for _, variant := range allVariants {
+        if _, ok := keys[variant.Key]; !ok {
+            if err := variant.Delete(api.db); err != nil {
+                logrus.Fatalf("Error while deleting variants: %s", err)
+            }
+        }
     }
 }
 
