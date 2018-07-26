@@ -2,6 +2,7 @@
 *.out
 *~
 flagr
+flagr-sync
 flagr.sqlite
 !*/
 site/

@@ -45,6 +45,20 @@ serve_docs:
 	@docsify serve $(PWD)/docs
 
 ################################
+### Flagr sync related
+################################
+
+build-sync:
+	@echo "Building flagr-sync to $(PWD)/flagr-sync ..."
+	@CGO_ENABLED=1 go build -o $(PWD)/flagr-sync github.com/checkr/flagr/pkg/setup/cmd
+
+run-sync:
+	@$(PWD)/flagr-sync
+
+docker-sync:
+	docker build -t flagr-sync -f $(PWD)/Dockerfile-sync .
+
+################################
 ### Private
 ################################
 

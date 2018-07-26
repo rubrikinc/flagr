@@ -7,7 +7,7 @@ import (
     "github.com/checkr/flagr/pkg/config"
     "github.com/checkr/flagr/pkg/entity"
     "github.com/checkr/flagr/pkg/repo"
-
+    "github.com/jinzhu/gorm"
     "github.com/sirupsen/logrus"
 
     yaml "gopkg.in/yaml.v2"
@@ -19,9 +19,12 @@ type FlagSynchronizer struct {
     api *SetupAPI
 }
 
-func NewFlagSynchronizer() *FlagSynchronizer {
+func NewFlagSynchronizer(db *gorm.DB) *FlagSynchronizer {
+    if db == nil {
+        db = repo.GetDB()
+    }
     return &FlagSynchronizer{
-        api: &SetupAPI{db: repo.GetDB()},
+        api: &SetupAPI{db: db},
     }
 }
 
