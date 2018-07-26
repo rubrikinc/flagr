@@ -90,4 +90,8 @@ var Config = struct {
 	JWTAuthSecret             string `env:"FLAGR_JWT_AUTH_SECRET" envDefault:""`
 	JWTAuthNoTokenRedirectURL string `env:"FLAGR_JWT_AUTH_NO_TOKEN_REDIRECT_URL" envDefault:""`
 	JWTAuthUserProperty       string `env:"FLAGR_JWT_AUTH_USER_PROPERTY" envDefault:"flagr_user"`
+
+	// YAMLConfigFilePath is the filepath to a YAML file for loading flag
+	// configuration. If empty, no flags will be loaded
+	YAMLConfigFilePath		  string `env:"FLAGR_YAML_CONFIG_FILE" envDefault:""`
 }{}
