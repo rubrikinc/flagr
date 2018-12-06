@@ -82,12 +82,13 @@ func (api *SetupAPI) EnsureVariantsExist(flagID uint, keys []string) []*entity.V
 }
 
 func (api *SetupAPI) DeleteUnusedVariants(flagID uint, keys map[string]uint) {
-    count, err := entity.NewVariantQuerySet(api.db).Count()
+    vqSet := entity.NewVariantQuerySet(api.db).FlagIDEq(flagID)
+    count, err := vqSet.Count()
     if err != nil {
         logrus.Fatalf("Error while counting variants: %s", err)
     }
     allVariants := make([]entity.Variant, 0, count)
-    err = entity.NewVariantQuerySet(api.db).All(&allVariants)
+    err = vqSet.All(&allVariants)
     if err != nil {
         logrus.Fatalf("Error while listing all variants: %s", err)
     }
