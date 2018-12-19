@@ -20,6 +20,7 @@ type YAMLFlag struct {
 
 type YAMLVariant struct {
     Key string
+    Attachment map[string]string
 }
 
 type YAMLSegment struct {

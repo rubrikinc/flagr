@@ -62,17 +62,17 @@ func (api *SetupAPI) UpdateFlag(flag *entity.Flag, description string, enabled b
     fatalIfDBErrors(api.db.Save(flag))
 }
 
-func (api *SetupAPI) EnsureVariantsExist(flagID uint, keys []string) []*entity.Variant {
-    result := make([]*entity.Variant, 0, len(keys))
-    for _, key := range keys {
+func (api *SetupAPI) EnsureVariantsExist(flagID uint, variants []*YAMLVariant) []*entity.Variant {
+    result := make([]*entity.Variant, 0, len(variants))
+    for _, v := range variants {
         variant := &entity.Variant{}
         fatalIfDBErrors(
             api.db.FirstOrCreate(
                 variant,
                 entity.Variant{
                     FlagID: flagID,
-                    Key: key,
-                    Attachment: entity.Attachment{},
+                    Key: v.Key,
+                    Attachment: v.Attachment,
                 },
             ),
         )
