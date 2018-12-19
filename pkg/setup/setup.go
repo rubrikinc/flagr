@@ -63,11 +63,7 @@ func (s *FlagSynchronizer) synchronizeFlag(flagName string, yamlFlag *YAMLFlag) 
     s.api.UpdateFlag(flag, yamlFlag.Description, yamlFlag.Enabled)
 
     // Create new variants that we need
-    variantKeys := make([]string, 0, len(yamlFlag.Variants))
-    for _, yamlVariant := range yamlFlag.Variants {
-        variantKeys = append(variantKeys, yamlVariant.Key)
-    }
-    variants := s.api.EnsureVariantsExist(flag.ID, variantKeys)
+    variants := s.api.EnsureVariantsExist(flag.ID, yamlFlag.Variants)
     variantKeyToID := make(map[string]uint)
     for _, variant := range variants {
         variantKeyToID[variant.Key] = variant.ID
